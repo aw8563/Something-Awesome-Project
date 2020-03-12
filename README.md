@@ -1,19 +1,16 @@
 # COMP6443 something awesome project - Secure Login Systems
 
-Investigating login systems and password storage
-
 Apparently there is no such thing as a 100% secure login system. I want to further research this issue and try to develop my own login system and attempt to break into it. This will help me understand some of the vulnerabilities that login systems have and what improvements can be made.
 
- 
 
-Goals for this project
+<b>Goals for this project</b>
 
 Main goals I want to accomplish
 
-Research how login systems work, what vulnerabilities they have and potential solutions to these vulnerabilities and compile findings into a report. Based on the report, I will build my own simple login system. 
-Break into my system with some simple techniques such as brute forcing, dictionary attacks and sql injections.
-Improve my current login system to help protect againt these threats. For example, having stricter password requirements and hashing passwords in case they are leaked.
-Explore alternate ways of password cracking that is independant of the login system. Im thinking of building my own keylogger.
+- Research how login systems work, what vulnerabilities they have and potential solutions to these vulnerabilities and compile findings into a report. Based on the report, I will build my own simple login system. 
+- Break into my system with some simple techniques such as brute forcing, dictionary attacks and sql injections.
+- Improve my current login system to help protect againt these threats. For example, having stricter password requirements and hashing passwords in case they are leaked.
+- Explore alternate ways of password cracking that is independant of the login system. Im thinking of building my own keylogger.
  
 
 Extensions 
@@ -25,7 +22,7 @@ In order to keep this project legal and ethical, I will not host my login system
 
  
 
-Criteria
+<b>Criteria</b>
 
 Pass - Complete goal 1
 
