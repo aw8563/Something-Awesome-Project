@@ -1,0 +1,10 @@
+{
+  "Title" : "Storing data as plaintext. This is very bad.",
+  "Users" : [
+    {
+      "id" : "0",
+      "username" : "username",
+      "password" : "password"
+    }
+  ]
+}

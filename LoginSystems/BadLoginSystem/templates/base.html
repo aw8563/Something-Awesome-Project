@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    {% if current_user.is_authenticated %}
+        <h1> HELLO {{ current_user }}  </h1>
+        <a href="/logout">logout</a>
+    {% else %}
+        <form method="POST", action="/login">
+          <input type="text" name="Username" value="username"><br>
+          <input type="text" name="Password" value="password">
+          <input type="submit" value="Login">
+        </form>
+    {% endif %}
+
+    {% block head %}
+    {% endblock %}
+</head>
+<body>
+    {% block body %}
+    {% endblock %}
+</body>
+</html>
