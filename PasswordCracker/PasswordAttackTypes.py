@@ -37,9 +37,11 @@ class BruteForceAttack(Attack):
         # special characters
         if self.hasSpecialChars:
             chars += "!@#$%^&*()-_=+[]{},./<>?;:"
-        for length in range(self.length):
+
+        # start from length 4 onwards
+        for length in range(4, self.length + 1):
             # There are faster methods but this way allows us to return result as a generator which is important
-            for combination in itertools.combinations_with_replacement(chars, length + 1):
+            for combination in itertools.combinations_with_replacement(chars, length):
                 for permutation in more_itertools.distinct_permutations(combination):
                     # yield is basical ly the same as return except it happens each iteration
                     # this means we can try each password as we are iterating
@@ -64,9 +66,12 @@ class DictionaryAttack(Attack):
 
     # returns generator for passwords
     def generatePasswords(self):
-        for length in range(self.length):
 
-            for combination in itertools.combinations(self.words, length + 1):
+        # start from length 1 onwards
+        for length in range(1, self.length + 1):
+
+            # generate all permutations
+            for combination in itertools.combinations(self.words, length):
                 for permutation in itertools.permutations(combination):
                     for rule in self.rules:
                     # yield is basically the same as return except it happens each iteration
