@@ -4,7 +4,7 @@ from PasswordCracker.Attacker import Attacker
 WEBSITE_URL = 'http://127.0.0.1:5000/login'
 USERNAME = 'hello'
 
-# This will only work for my website
+# This will most likely only work for my website
 # If for some reason you want to attack another website you will have to modify this function
 def checkSuccess(response):
     return "HELLO" in response.content.decode()
@@ -20,8 +20,9 @@ if __name__ == '__main__':
     bruteForce.length = 4
     dictionary.length = 3
 
+    # simple rule that adds "!" to end of pw
     def myRule(string):
-        return string + "2"
+        return string + "!"
 
     dictionary.addRule(myRule)
     dictionary.addDictionary(["hello", "world", "the", "quick", "brown"])

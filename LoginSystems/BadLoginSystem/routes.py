@@ -29,8 +29,10 @@ def createAccount():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    # TODO: this 'next' is EXTREMELY unsafe. An attacker could use this to redirect victims a new phising website upon login
+    next = request.args.get('next')
     if (current_user.is_authenticated):
-        return redirect('/')
+        return redirect(next or '/')
 
     if request.method == "POST":
         username = request.form.get('Username')
@@ -39,7 +41,7 @@ def login():
         if userManager.loginUser(username, password):
 
             login_user(userManager.users[username])
-            return redirect('/')
+            return redirect(next or '/')
 
     return render_template("loginPage.html")
 

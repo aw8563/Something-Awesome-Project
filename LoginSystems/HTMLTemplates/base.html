@@ -9,11 +9,12 @@
         <h1> HELLO {{ current_user.username }}  </h1>
         <a href="/logout">logout</a>
     {% else %}
-        <form method="POST", action="/login">
-          <input type="text" name="Username" value="username"><br>
-          <input type="password" name="Password" value="password">
-          <input type="submit" value="Login">
-        </form>
+{#        <form method="POST", action="/login">#}
+{#          <input type="text" name="Username" value="username"><br>#}
+{#          <input type="password" name="Password" value="password">#}
+{#          <input type="submit" value="Login">#}
+{#        </form>#}
+        <a href="login">login page</a><br><br>
         <a href="createAccount">create account</a>
     {% endif %}
 
