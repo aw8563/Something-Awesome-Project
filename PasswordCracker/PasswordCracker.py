@@ -5,8 +5,7 @@ import time
 
 
 class Attacker():
-    def __init__(self, loginURL, logoutURL, formTags=["Username", "Password"],
-                 attackMethods={"BruteForceAttack":BruteForceAttack(), "DictionaryAttack":DictionaryAttack()}):
+    def __init__(self, loginURL, logoutURL, formTags=None, attackMethods=None):
 
         # url of the login page
         self.loginURL = loginURL
@@ -14,28 +13,31 @@ class Attacker():
         # url of logout page
         self.logoutURL = logoutURL
 
-        # Layout of the login form. You can check this through inspect element. Or if you built the website you can check the code!
-        self.formTags = formTags
+        # Layout of the login form. You can check this through inspect element.
+        # Or if you built the website you can check the code!
+        self.formTags = formTags or ["Username", "Password"]
 
         # By default this is set to:
         # {
-        #   "Username" : "username",
-        #   "Password" : "password",
+        #   "Username" : "dummy",
+        #   "Password" : "dummy"
         # }
         self.data = {
-            formTags[0] : None, # form id for username
-            formTags[1] : None # form id for password
+            self.formTags[0]:"dummy", # form id for username
+            self.formTags[1]:"dummy" # form id for password
         }
 
         # list of attack methods
-        # You can write your own class but it must contain a generatePasswords() method that returns a list of password guesses
-        self.attackMethods = attackMethods
+        # You can write your own class but it must contain a generatePasswords() method that returns an iterator of guesses
+        self.attackMethods = attackMethods or {"BruteForceAttack":BruteForceAttack(),
+                                               "DictionaryAttack":DictionaryAttack()}
 
     # runs attack on the website.
     # successful is a function that the user provides that returns whether the login succeeded or not.
     # def successful(response) -> Boolean
     # this will change for depending on how the website is constructed. For mine just check that "HELLO" is present in response.content
-    def runAttack(self, checkSuccess, attackMethods=None, username=None, findAll=False, testMode=True, verbose=False, log=False):
+    def runAttack(self, checkSuccess, attackMethods=None, username=None,
+                  findAll=False, testMode=True, verbose=False, log=False):
         print("ATTACKING", self.loginURL)
 
         # stores password've we cracked
@@ -51,6 +53,7 @@ class Attacker():
 
             for name, attackMethod in self.attackMethods.items():
 
+                # skip if we don't want to run a particular mode
                 if name not in attackMethods:
                     continue
 
@@ -59,10 +62,12 @@ class Attacker():
                     open(name + ".txt", 'w').close()
 
                 startTime = time.time()
-                print("===========================================================================\n" + str(attackMethod))
+                print("=========================================================================\n" + str(attackMethod))
 
                 # logging if needed
                 with open(name + ".txt", 'a') as file:
+                    file.write("%s\n\n" % str(attackMethod))
+
                     count = 0
                     for password in attackMethod.generatePasswords():
                         count += 1
@@ -70,7 +75,6 @@ class Attacker():
                             if verbose:
                                 print("TEST MODE: generated password [%s]" % password)
                             continue
-
 
                         # if username is not passed as argument, we will user the password as our username
                         self.setDataFields(username, password)
@@ -106,7 +110,7 @@ class Attacker():
                 for pw in foundPasswords:
                     print(pw)
 
-                print("===========================================================================\n")
+                print("=========================================================================\n")
 
         return foundPasswords
 

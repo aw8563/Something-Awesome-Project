@@ -14,12 +14,13 @@ class Attack(ABC):
     def __str__(self):
         return type(self).__name__
 
+
 class BruteForceAttack(Attack):
     def __init__(self, length=8, hasCapitals=False, hasSpecialChars=False):
-        super().__init__(length) # length of password
+        super().__init__(length)  # length of password
 
-        self.hasCapitals = hasCapitals # does pw contain capitals
-        self.hasSpecialChars = hasSpecialChars # does pw contain special characters
+        self.hasCapitals = hasCapitals  # does pw contain capitals
+        self.hasSpecialChars = hasSpecialChars  # does pw contain special characters
 
     # returns generator for passwords
     def generatePasswords(self):
@@ -49,20 +50,20 @@ class BruteForceAttack(Attack):
                     yield "".join(permutation)
 
     def __str__(self):
-        return super().__str__() + " | Max Length: %s, %s, %s" %(self.length, \
-                                    "Capitals" if self.hasCapitals else "No Capitals", \
-                                    "Special Characters" if self.hasSpecialChars else "No Special Characters")
+        return super().__str__() + \
+               " | Max Length: %s, %s, %s" % (self.length, "Capitals" if self.hasCapitals else "No Capitals",
+                                              "Special Characters" if self.hasSpecialChars else "No Special Characters")
 
 
 class DictionaryAttack(Attack):
-    def __init__(self, length=3, words=[], rules = []):
-        super().__init__(length) # how many words are included. Eg a length 2 password could be "helloworld"
+    def __init__(self, length=3, words=None, rules=None):
+        super().__init__(length)  # how many words are included. Eg a length 2 password could be "helloworld"
 
         # list of words to include
-        self.words = words
+        self.words = words or []
 
         # rules that modify a word. Eg a rule might capitalize the first letter of a word
-        self.rules = [self.doNothingRule, self.addOneToEndRule] + rules
+        self.rules = [self.doNothingRule, self.addOneToEndRule] + (rules or [])
 
     # returns generator for passwords
     def generatePasswords(self):
@@ -74,9 +75,9 @@ class DictionaryAttack(Attack):
             for combination in itertools.combinations(self.words, length):
                 for permutation in itertools.permutations(combination):
                     for rule in self.rules:
-                    # yield is basically the same as return except it happens each iteration
-                    # this means we can try each password as we are iterating
-                    # this is much than waiting for the entire list to generate and looping through it again
+                        # yield is basically the same as return except it happens each iteration
+                        # this means we can try each password as we are iterating
+                        # this is much than waiting for the entire list to generate and looping through it again
                         yield rule("".join(permutation))
 
     # base rule that does nothing
@@ -100,4 +101,4 @@ class DictionaryAttack(Attack):
 
     def __str__(self):
         return super().__str__() + " | Max number of words: %s, Number of rules: %s" \
-                                    % (self.length, len(self.rules) - 1)
+               % (self.length, len(self.rules) - 1)

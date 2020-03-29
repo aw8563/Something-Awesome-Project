@@ -1,0 +1,2 @@
+BruteForceAttack | Max Length: 7, No Capitals, No Special Characters
+

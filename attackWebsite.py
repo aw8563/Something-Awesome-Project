@@ -12,7 +12,6 @@ DICTIONARY_PATH = "PasswordCracker/dictionary.txt"
 def checkSuccess(response):
     return "HELLO" in response.content.decode()
 
-
 if __name__ == '__main__':
     attacker = Attacker(LOGIN_URL, LOGOUT_URL)
 
