@@ -39,7 +39,7 @@ class BruteForceAttack(Attack):
         if self.hasSpecialChars:
             chars += "!@#$%^&*()-_=+[]{},./<>?;:"
 
-        # start from length 4 onwards
+        # start from length 3 onwards
         for length in range(4, self.length + 1):
             # There are faster methods but this way allows us to return result as a generator which is important
             for combination in itertools.combinations_with_replacement(chars, length):

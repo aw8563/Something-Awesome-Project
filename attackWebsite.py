@@ -19,7 +19,7 @@ if __name__ == '__main__':
     bruteForce = attacker.getAttackMethod("BruteForceAttack")
     dictionary = attacker.getAttackMethod("DictionaryAttack")
 
-    bruteForce.length = 7
+    bruteForce.length = 5
     dictionary.length = 2
 
     # simple rule that adds "123" to end of pw
@@ -32,7 +32,7 @@ if __name__ == '__main__':
         wordList = [word[:-1] for word in file]
 
     dictionary.addRule(myRule)
-    dictionary.addWords(wordList)
+    dictionary.addWords(wordList[:100])
 
     # perform the attack! You can specify which attacks to use if you want
     attacker.runAttack(checkSuccess, findAll=True, testMode=False, verbose=False, log=True)
