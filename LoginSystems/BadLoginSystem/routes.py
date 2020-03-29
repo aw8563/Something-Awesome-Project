@@ -6,7 +6,7 @@ from LoginSystems.BadLoginSystem import app, userManager
 @app.route('/')
 def homePage():
     print(current_user)
-    return render_template('home.html', user=current_user)
+    return render_template('home.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

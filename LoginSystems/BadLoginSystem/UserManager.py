@@ -1,4 +1,4 @@
-from flask_login import UserMixin, login_user, current_user
+from flask_login import UserMixin, login_user
 import json
 
 class User(UserMixin): # additional attributes when needed. For now just inherits from base class

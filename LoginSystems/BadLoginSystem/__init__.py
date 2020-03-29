@@ -1,13 +1,12 @@
 from flask import Flask
 from flask_login import LoginManager
+from LoginSystems.BadLoginSystem.UserManager import UserManager
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='../HTMLTemplates')
 app.config.from_object("LoginSystems.config")
 
 loginManager = LoginManager(app)
 loginManager.login_view = 'login'
-
-from LoginSystems.BadLoginSystem.UserManager import UserManager
 userManager = UserManager()
 
 @loginManager.user_loader
@@ -20,7 +19,7 @@ def load_user(id):
     """
 
     return userManager.getUser(int(id))
-
+        
 
 from LoginSystems.BadLoginSystem import routes
 
