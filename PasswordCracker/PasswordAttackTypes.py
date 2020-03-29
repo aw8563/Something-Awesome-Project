@@ -1,4 +1,7 @@
 from abc import ABC, abstractmethod
+import itertools
+import more_itertools
+
 
 class PasswordAttack(ABC):
     def __init__(self, length):
@@ -21,7 +24,25 @@ class BruteForceAttack(PasswordAttack):
 
     # returns list of passwords
     def generatePasswords(self):
-        return ["brute", "force", "attack", "pws"]
+        result = []
+
+        # normal characters
+        chars = "abcdefghijklmnopqrstuvwxyz"
+
+        # numbers
+        chars += "0123456789"
+
+        # capitals
+        if self.hasCapitals:
+            chars += "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+        # special characters
+        if self.hasSpecialChars:
+            chars += "!@#$%^&*()-_=+[]{},./<>?;:"
+
+        for combination in itertools.combinations_with_replacement(chars, self.length):
+            for permutation in more_itertools.distinct_permutations(combination):
+                yield "".join(permutation)
 
     def __str__(self):
         return super().__str__() + " | Max Length: %s, %s, %s" %(self.length, \
