@@ -40,8 +40,6 @@ class Attacker():
                   findAll=False, testMode=True, verbose=False, log=False):
         print("ATTACKING", self.loginURL)
 
-        # stores password've we cracked
-        foundPasswords = set({})
 
         # can specify which attack methods to use
         # if not specified, use all that are loaded in
@@ -49,24 +47,25 @@ class Attacker():
             attackMethods = [name for name in self.attackMethods]
 
         with requests.Session() as session:
-
-
             for name, attackMethod in self.attackMethods.items():
 
                 # skip if we don't want to run a particular mode
                 if name not in attackMethods:
                     continue
 
-                # if we are logging, remove the old log file
+                # stores password've we cracked
+                foundPasswords = set({})
+
+                # if we are logging, override the old log file
                 if log:
-                    open(name + ".txt", 'w').close()
+                    with open(name + ".txt", 'w') as file:
+                        file.write("%s\n\n" % str(attackMethod))
 
                 startTime = time.time()
                 print("=========================================================================\n" + str(attackMethod))
 
                 # logging if needed
                 with open(name + ".txt", 'a') as file:
-                    file.write("%s\n\n" % str(attackMethod))
 
                     count = 0
                     for password in attackMethod.generatePasswords():
@@ -111,8 +110,6 @@ class Attacker():
                     print(pw)
 
                 print("=========================================================================\n")
-
-        return foundPasswords
 
     def setDataFields(self, username, password):
         self.data[self.formTags[0]] = username or password
