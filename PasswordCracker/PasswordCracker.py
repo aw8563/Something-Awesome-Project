@@ -32,6 +32,7 @@ class Attacker():
         self.attackMethods = attackMethods or {"BruteForceAttack":BruteForceAttack(),
                                                "DictionaryAttack":DictionaryAttack()}
 
+    # TODO: implement threading
     # runs attack on the website.
     # successful is a function that the user provides that returns whether the login succeeded or not.
     # def successful(response) -> Boolean
