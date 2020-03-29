@@ -1,5 +1,7 @@
 from PasswordCracker.PasswordAttackTypes import BruteForceAttack, DictionaryAttack
+
 import requests
+import time
 
 
 class Attacker():
@@ -57,6 +59,7 @@ class Attacker():
                 if name not in attackMethods:
                     continue
 
+                startTime = time.time()
                 print("===========================================================================\n" + str(attackMethod))
 
                 n = 0
@@ -66,6 +69,7 @@ class Attacker():
                         if self.verbose:
                             print("TEST MODE: generated password [%s]" % password)
                         continue
+
 
                     # if username is not passed as argument, we will user the password as our username
                     self.setDataFields(username, password)
@@ -77,6 +81,8 @@ class Attacker():
                         print("Trying [%s] ... %s" % (password, "SUCCESS" if found else "FAILED"))
 
                     if found:
+                        if not self.verbose:
+                            print("Found [%s]" % password)
                         foundPasswords.add(password)
 
                         # if we are just brute forcing a single username exit after we found it
@@ -87,7 +93,7 @@ class Attacker():
 
                     session.get("http://127.0.0.1:5000/logout")
 
-                print("%s generated %d passwords. Found %d password:" % (name, n, len(foundPasswords)))
+                print("%s generated %d passwords in %s ms. Found %d password:" % (name, n, time.time() - startTime, len(foundPasswords)))
                 for pw in foundPasswords:
                     print(pw)
 

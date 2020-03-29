@@ -60,18 +60,18 @@ class DictionaryAttack(Attack):
         self.words = words
 
         # rules that modify a word. Eg a rule might capitalize the first letter of a word
-        self.rules = [self.doNothingRule, self.capitaliseRule, self.addOneToEndRule] + rules
+        self.rules = [self.doNothingRule, self.addOneToEndRule] + rules
 
     # returns generator for passwords
     def generatePasswords(self):
         for length in range(self.length):
-            for rule in self.rules:
-                for combination in itertools.combinations(self.words, length + 1):
-                    for permutation in itertools.permutations(combination):
 
-                        # yield is basically the same as return except it happens each iteration
-                        # this means we can try each password as we are iterating
-                        # this is much than waiting for the entire list to generate and looping through it again
+            for combination in itertools.combinations(self.words, length + 1):
+                for permutation in itertools.permutations(combination):
+                    for rule in self.rules:
+                    # yield is basically the same as return except it happens each iteration
+                    # this means we can try each password as we are iterating
+                    # this is much than waiting for the entire list to generate and looping through it again
                         yield rule("".join(permutation))
 
     # base rule that does nothing
@@ -90,7 +90,7 @@ class DictionaryAttack(Attack):
     def addRule(self, rule):
         self.rules.append(rule)
 
-    def addDictionary(self, words):
+    def addWords(self, words):
         self.words += words
 
     def __str__(self):
