@@ -1,8 +1,8 @@
 from PasswordCracker.Attacker import Attacker
 
 # login url of website
-WEBSITE_URL = 'http://127.0.0.1:5000/login'
-USERNAME = 'hello'
+LOGIN_URL = 'http://127.0.0.1:5000/login'
+LOGOUT_URL = 'http://127.0.0.1:5000/logout'
 
 # This will most likely only work for my website
 # If for some reason you want to attack another website you will have to modify this function
@@ -11,7 +11,7 @@ def checkSuccess(response):
 
 
 if __name__ == '__main__':
-    attacker = Attacker(WEBSITE_URL, USERNAME, testMode=True, verbose=True)
+    attacker = Attacker(LOGIN_URL, LOGOUT_URL, testMode=False, verbose=True)
 
     # set attack method parameters here if you want to
     bruteForce = attacker.getAttackMethod("BruteForceAttack")
@@ -25,8 +25,8 @@ if __name__ == '__main__':
         return string + "!"
 
     dictionary.addRule(myRule)
-    dictionary.addDictionary(["hello", "world", "the", "quick", "brown"])
+    dictionary.addDictionary(["hi", "world", "the", "quick", "brown"])
 
     # perform the attack! You can specify which attacks to use if you want
-    password = attacker.runAttack(checkSuccess, "DictionaryAttack")
+    password = attacker.runAttack(checkSuccess, "DictionaryAttack", findAll=True)
     print("\n\nPassword is <%s>" % password)

