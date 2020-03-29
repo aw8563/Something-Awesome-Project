@@ -1,2 +1,10 @@
-BruteForceAttack | Max Length: 7, No Capitals, No Special Characters
+BruteForceAttack | Max Length: 4, No Capitals, No Special Characters
 
+aaaa
+baba
+abba
+bama
+saab
+caca
+dada
+BruteForceAttack generated 1001 passwords in 3.054812431335449 ms. Found 7 password:

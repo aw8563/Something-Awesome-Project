@@ -1,0 +1,30 @@
+DictionaryAttack | Max number of words: 1, Number of rules: 2
+
+this
+your
+more
+will
+home
+page
+search
+free
+time
+site
+what
+their
+news
+there
+only
+contact
+here
+business
+help
+view
+online
+first
+services
+some
+these
+click
+service
+DictionaryAttack generated 300 passwords in 1.486037015914917 ms. Found 27 password:
