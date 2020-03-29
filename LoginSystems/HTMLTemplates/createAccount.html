@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+{% extends 'base.html' %}
+{% block head %}
+    <meta charset="UTF-8">
+    <title>CREATE ACCOUNT PAGE</title>
+    <h1> CREATE ACCOUNT</h1>
+{% endblock %}
+
+{% block body %}
+    {% if error %}
+        <br>
+        <p1>error: please try again</p1>
+    {% endif %}
+    <form method="POST">
+        <label>USERNAME</label>
+        <input type="text" name="Username"><br>
+
+        <label>PASSWORD</label>
+        <input type="password" name="Password"><br>
+
+        <label>No email for bad login system</label>
+        <input type="text" disabled><br>
+        <input type="submit" value="Submit">
+    </form>
+
+
+{% endblock %}
+</html>

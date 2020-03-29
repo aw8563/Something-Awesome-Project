@@ -6,20 +6,24 @@
     <title>Title</title>
 
     {% if current_user.is_authenticated %}
-        <h1> HELLO {{ current_user }}  </h1>
+        <h1> HELLO {{ current_user.username }}  </h1>
         <a href="/logout">logout</a>
     {% else %}
         <form method="POST", action="/login">
           <input type="text" name="Username" value="username"><br>
-          <input type="text" name="Password" value="password">
+          <input type="password" name="Password" value="password">
           <input type="submit" value="Login">
         </form>
+        <a href="createAccount">create account</a>
     {% endif %}
 
     {% block head %}
     {% endblock %}
+    <br>
 </head>
 <body>
+    <p1>==============================================================================================</p1>
+
     {% block body %}
     {% endblock %}
 </body>
