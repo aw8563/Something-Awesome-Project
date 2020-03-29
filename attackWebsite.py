@@ -11,11 +11,21 @@ def checkSuccess(response):
 
 
 if __name__ == '__main__':
-    attacker = Attacker(WEBSITE_URL, USERNAME, testMode=True, verbose=False)
+    attacker = Attacker(WEBSITE_URL, USERNAME, testMode=True, verbose=True)
 
     # set attack method parameters here if you want to
-    attacker.getAttackMethod("BruteForceAttack").length = 4
+    bruteForce = attacker.getAttackMethod("BruteForceAttack")
+    dictionary = attacker.getAttackMethod("DictionaryAttack")
 
+    bruteForce.length = 4
+    dictionary.length = 3
 
-    password = attacker.runAttack(checkSuccess)
+    def myRule(string):
+        return string + "2"
+
+    dictionary.addRule(myRule)
+    dictionary.addDictionary(["hello", "world", "the", "quick", "brown"])
+
+    # perform the attack! You can specify which attacks to use if you want
+    password = attacker.runAttack(checkSuccess, "DictionaryAttack")
     print("\n\nPassword is <%s>" % password)
