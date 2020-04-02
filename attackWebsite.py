@@ -32,7 +32,7 @@ if __name__ == '__main__':
         wordList = [word[:-1] for word in file]
 
     dictionary.addRule(myRule)
-    dictionary.addWords(wordList[:100])
+    dictionary.addWords(wordList)
 
     # perform the attack! You can specify which attacks to use if you want
-    attacker.runAttack(checkSuccess, findAll=True, testMode=False, verbose=False, log=True)
+    attacker.runAttack(checkSuccess, ["DictionaryAttack"],findAll=True, testMode=False, verbose=False, log=True)
