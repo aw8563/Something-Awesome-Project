@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <h1>Redirect Attack</h1>
+</head>
+<body>
+<a href="login?next=fakeLoginPage">localhost:5000/login?next=fakeLoginPage</a>
+<pre>
+An attacker could send this valid website link in phishing attacks.
+This link is 100% legitimate as it is hosted by the webiste.
+
+However, notice the "localhost:5000/fakeLoginPage" part after "next=".
+For this insecure website, it means on a successful login, that url will be the next page displayed.
+If we change "fakeLoginPage" to "https://www.google.com/" it would redirect to google instead
+
+That means if the user logs in succesfully, the attacker can redirect them to their own page.
+A tactic could be to redirect users to an identical login page owned by the attacker
+The victim would think they entered their details wrong (even though they didn't) and re-enter them on the attackers website instead.
+
+If this was a real attack on a real website, the urls would be obviously change.
+</pre>
+
+</body>
+</html>

@@ -54,3 +54,19 @@ def logoutUser():
 @login_required
 def secretPage():
     return "success!"
+
+@app.route('/redirectAttack')
+def redirectAttack():
+    return render_template('redirectAttack.html')
+
+@app.route('/fakeLoginPage', methods=['GET','POST'])
+def fakeLogin():
+    if request.method == 'POST':
+        return redirect('https://en.wikipedia.org/wiki/URL_redirection')
+
+    return render_template('fakeLoginPage.html')
+
+@app.route('/search')
+def search():
+    return "Database is not implemented for the Bad login system." \
+           "Check Average or Good login system for search functionality"

@@ -68,3 +68,15 @@ def searchPage():
 @app.route('/answerPage')
 def answers():
     return render_template('answers.html')
+
+
+@app.route('/redirectAttack')
+def redirectAttack():
+    return render_template('redirectAttack.html')
+
+@app.route('/fakeLoginPage', methods=['GET','POST'])
+def fakeLogin():
+    if request.method == 'POST':
+        return redirect('https://en.wikipedia.org/wiki/URL_redirection')
+
+    return render_template('fakeLoginPage.html')
