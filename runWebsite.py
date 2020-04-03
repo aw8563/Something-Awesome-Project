@@ -8,8 +8,9 @@ if __name__ == '__main__':
     print("2: Average")
     print("3: Good")
 
+    # loginSystem.runBad()
     # loginSystem.runAverage()
-    loginSystem.runBad()
+    loginSystem.runGood()
 
     mode = input()
     while (not mode.isdigit() or int(mode) > 3 or int(mode) < 0):

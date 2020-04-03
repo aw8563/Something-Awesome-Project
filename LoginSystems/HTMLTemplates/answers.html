@@ -20,10 +20,12 @@
 - This will find 'username' and 'password' as column names
 - Now we can finally query to display these values
 
-    ' or 1 = 1 union select id, password from Users --
     ' or 1 = 1 union select id, username from Users --
+    ' or 1 = 1 union select id, password from Users --
 
 - And now we have everyone's login info!
+- If you are running the Average system, the passwords will be plain text.
+- However if you are running the Good system, the passwords will be hashed!
     </pre>
 </body>
 </html>
