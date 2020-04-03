@@ -1,5 +1,4 @@
 flask
 flask-login
 more-itertools
-requests
-sqlite3
+request

@@ -1,7 +1,7 @@
 from flask import render_template, request, redirect
 from flask_login import login_required, login_user, logout_user, current_user
 
-from LoginSystems.AverageLoginSystem import app, userManager
+from LoginSystems.AverageLoginSystem import app, databaseManager
 
 @app.route('/')
 def homePage():
@@ -17,7 +17,7 @@ def createAccount():
         username = request.form.get('Username')
         password = request.form.get('Password')
 
-        user = userManager.addUser(username, password)
+        user = databaseManager.addUser(username, password)
         if (user):
             login_user(user)
             return redirect('/')
@@ -37,7 +37,7 @@ def login():
         username = request.form.get('Username')
         password = request.form.get('Password')
 
-        if userManager.loginUser(username, password):
+        if databaseManager.loginUser(username, password):
             return redirect(next or '/')
 
     return render_template("loginPage.html")
@@ -51,3 +51,15 @@ def logoutUser():
 @login_required
 def secretPage():
     return "success!"
+
+
+@app.route('/search', methods=['GET', 'POST'])
+def searchPage():
+    search = False
+    results = []
+    if request.method == 'POST':
+        query = request.form.get('query')
+        results = databaseManager.query(query)
+        search=True
+
+    return render_template('searchPage.html', search=search, results=results)

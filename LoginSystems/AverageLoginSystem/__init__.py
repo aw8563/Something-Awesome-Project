@@ -1,13 +1,13 @@
 from flask import Flask
 from flask_login import LoginManager
-from LoginSystems.AverageLoginSystem.UserManager import UserManager
+from LoginSystems.AverageLoginSystem.DatabaseManager import DatabaseManager
 
 app = Flask(__name__, template_folder='../HTMLTemplates')
 app.config.from_object("LoginSystems.config")
 
 loginManager = LoginManager(app)
 loginManager.login_view = 'login'
-userManager = UserManager()
+databaseManager = DatabaseManager()
 
 
 @loginManager.user_loader
@@ -19,7 +19,7 @@ def load_user(id):
     :return: A User matching a specific UID. If no matches are found, returns None.
     """
 
-    return userManager.getUser(int(id))
+    return databaseManager.getUser(int(id))
 
 from LoginSystems.AverageLoginSystem import routes
 

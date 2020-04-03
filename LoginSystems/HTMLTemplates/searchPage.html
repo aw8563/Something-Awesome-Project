@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+{% extends 'base.html' %}
+{% block head %}
+
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <h1>SEARCH PAGE</h1>
+{% endblock %}
+
+{% block body %}
+    <form method="POST">
+        <label>SEARCH CRITERIA</label>
+        <input type="text" name="query"><br>
+        <input type="submit" value="Search">
+    </form>
+
+    {% if search %}
+        {% if results|length %}
+            {% for item in results %}
+                <br><p2>{{ item }}</p2>
+            {% endfor %}
+        {% else %}
+            <br><p3>NO RESULTS</p3><br>
+        {% endif %}
+    {% endif %}
+{% endblock %}
+</html>

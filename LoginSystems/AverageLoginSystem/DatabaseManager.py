@@ -1,7 +1,7 @@
 from flask_login import UserMixin, login_user
 import sqlite3
 
-DATABASE_PATH = "LoginSystems/AverageLoginSystem/userData.db"
+DATABASE_PATH = "LoginSystems/AverageLoginSystem/database.db"
 class User(UserMixin):
     def __init__(self, id, username, password):
         self.id = id
@@ -15,7 +15,7 @@ class User(UserMixin):
         return "ID: %d | Username: %s | Password %s" %(self.id, self.username, self.password)
 
 
-class UserManager():
+class DatabaseManager():
     def __init__(self):
         self.database = sqlite3.connect(DATABASE_PATH, check_same_thread=False)
 
@@ -53,15 +53,12 @@ class UserManager():
 
         return False
 
-
-# userManager = UserManager()
-
-
-# database = sqlite3.connect(DATABASE_PATH)
-# for result in database.execute("SELECT * FROM USERS").fetchall():
-#     print(result)
+    def query(self, value):
+        return self.database.execute("select * from Items where name like '%s' or id = %s"
+                                     % ('%'+value+'%', value if value.isdigit() else -1)).fetchall() or []
 
 
+database = sqlite3.connect("database.db")
 # database.execute("DROP TABLE USERS")
 # database.execute("CREATE TABLE USERS(id INTEGER PRIMARY KEY AUTOINCREMENT , username varchar(255), password varchar(255))")
 
