@@ -4,21 +4,44 @@
 {% block head %}
 
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Search</title>
     <h1>SEARCH PAGE</h1>
+
+    <pre>
+        Both the user data and item data are stored in the same sqlite3 database under different tables.
+
+        This is how the sql query is handled in the backend and is very vulnerable to injection attacks.
+        How would you find the login details?
+
+        def query(self, value):
+        try:
+            sql = "select * from Items where name like '%s' or id = %s" % ('%'+value+'%', value if value.isdigit() else -1)
+            result = self.database.execute(sql).fetchall()
+        except Exception as e:
+            print("BAD SQL QUERY\n", sql, "\n", e)
+            return []
+
+        return result or []
+    </pre>
+    <br><a href="/answerPage">Answers</a>
+
 {% endblock %}
 
 {% block body %}
     <form method="POST">
         <label>SEARCH CRITERIA</label>
-        <input type="text" name="query"><br>
+        <input type="text" name="query" value="{{ query }}"><br>
         <input type="submit" value="Search">
     </form>
 
     {% if search %}
         {% if results|length %}
-            {% for item in results %}
-                <br><p2>{{ item }}</p2>
+            {% for result in results %}
+                <br>
+                {% for column in result %}
+                    <p2>{{ column }}</p2>
+                {% endfor %}
+                <br>
             {% endfor %}
         {% else %}
             <br><p3>NO RESULTS</p3><br>

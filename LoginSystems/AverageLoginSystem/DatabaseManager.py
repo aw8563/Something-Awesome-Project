@@ -54,12 +54,20 @@ class DatabaseManager():
         return False
 
     def query(self, value):
-        return self.database.execute("select * from Items where name like '%s' or id = %s"
-                                     % ('%'+value+'%', value if value.isdigit() else -1)).fetchall() or []
+        try:
+            sql = "select * from Items where name like '%s' or id = %s" % ('%'+value+'%', value if value.isdigit() else -1)
+            result = self.database.execute(sql).fetchall()
+        except Exception as e:
+            print("BAD SQL QUERY\n", sql, "\n", e)
+            return []
+
+        return result or []
 
 
 database = sqlite3.connect("database.db")
-# database.execute("DROP TABLE USERS")
+
+result = database.execute("select name from sqlite_master where type='table'").fetchall()
+print(result)
 # database.execute("CREATE TABLE USERS(id INTEGER PRIMARY KEY AUTOINCREMENT , username varchar(255), password varchar(255))")
 
 # for result in database.execute("SELECT * FROM USERS").fetchall():

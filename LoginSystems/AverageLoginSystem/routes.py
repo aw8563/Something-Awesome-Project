@@ -57,9 +57,14 @@ def secretPage():
 def searchPage():
     search = False
     results = []
+    query = ""
     if request.method == 'POST':
         query = request.form.get('query')
         results = databaseManager.query(query)
         search=True
 
-    return render_template('searchPage.html', search=search, results=results)
+    return render_template('searchPage.html', search=search, results=results, query=query)
+
+@app.route('/answerPage')
+def answers():
+    return render_template('answers.html')
