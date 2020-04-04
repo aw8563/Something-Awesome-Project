@@ -1,2 +1,0 @@
-DictionaryAttack | Max number of words: 2, Number of rules: 2
-
