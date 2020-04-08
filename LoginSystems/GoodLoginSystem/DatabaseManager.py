@@ -4,17 +4,14 @@ import sqlite3
 
 DATABASE_PATH = "LoginSystems/GoodLoginSystem/database.db"
 class User(UserMixin):
-    def __init__(self, id, username, passwordHash):
+    def __init__(self, id):
         self.id = id
-        self.username = username
-        self.passwordHash = passwordHash
 
     def get_id(self):
         return self.id
 
     def __str__(self):
-        return "ID: %d | Username: %s" %(self.id, self.username)
-
+        return "Account_%d" %(self.id)
 
 class DatabaseManager():
     def __init__(self):
@@ -24,25 +21,44 @@ class DatabaseManager():
         result = self.database.execute("select * from Users where id = %d" % id).fetchone()
 
         if (result):
-            return User(result[0], result[1], result[2])
+            return User(result[0])
 
 
     def addUser(self, username, password):
-        if not self.checkPassword(password):
-            return
-
         if self.database.execute("select * from Users where username ='%s' limit 1" % username).fetchone():
-            return
+            return "Username in use"
+
+        if not self.checkPassword(password):
+            return "Password too weak"
 
         self.database.execute("insert into Users (username, password) values('%s', '%s')" % (username, password))
         self.database.commit()
 
         result = self.database.execute("select * from Users where username = '%s'" %username).fetchone()
 
-        return User(result[0], result[1], result[2])
+        return User(result[0])
 
     def checkPassword(self, password):
-        return len(password) > 6
+        hasLetter = False
+        hasUpperCase = False
+        hasDigit = False
+        hasSpecialChar = False
+
+        for c in password:
+            if c.isalpha():
+                hasLetter = True
+
+            if c.isupper():
+                hasUpperCase = True
+
+            if c.isdigit():
+                hasDigit = True
+
+            if c in "!@#$%^&*()_+-=?":
+                hasSpecialChar = True
+
+        # password must be at least length 8 and contain a lowercase letter, uppercase letter, digit and special char
+        return hasLetter and hasUpperCase and hasDigit and hasSpecialChar and len(password) >= 8
 
     def loginUser(self, username, password):
         hash = hashlib.sha256()
@@ -53,7 +69,7 @@ class DatabaseManager():
                                        (username, hashedPassword)).fetchone()
 
         if result:
-            login_user(User(result[0], result[1], result[2]))
+            login_user(User(result[0]))
             return True
 
         return False
@@ -67,9 +83,6 @@ class DatabaseManager():
             return []
 
         return result or []
-
-
-database = sqlite3.connect("database.db")
 
 
 # database.execute("CREATE TABLE USERS(id INTEGER PRIMARY KEY AUTOINCREMENT , username varchar(64), password varchar(64))")

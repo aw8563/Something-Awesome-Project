@@ -18,11 +18,11 @@ def createAccount():
         password = request.form.get('Password')
 
         user = databaseManager.addUser(username, password)
-        if (user):
+        if type(user) == str: # error
+            return render_template("createAccount.html", error=user)
+        else:
             login_user(user)
             return redirect('/')
-        else:
-            return render_template("createAccount.html", error=True)
 
     return render_template('createAccount.html', error=False)
 

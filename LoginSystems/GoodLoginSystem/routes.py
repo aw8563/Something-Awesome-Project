@@ -1,6 +1,5 @@
 from flask import render_template, request, redirect
 from flask_login import login_required, login_user, logout_user, current_user
-
 from LoginSystems.GoodLoginSystem import app, databaseManager
 
 @app.route('/')
@@ -18,18 +17,17 @@ def createAccount():
         password = request.form.get('Password')
 
         user = databaseManager.addUser(username, password)
-        if (user):
+        if type(user) == str: # error
+            return render_template("createAccount.html", error=user)
+        else:
             login_user(user)
             return redirect('/')
-        else:
-            return render_template("createAccount.html", error=True)
 
     return render_template('createAccount.html', error=False)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    # TODO: this 'next' is EXTREMELY unsafe. An attacker could use this to redirect victims a new phising website upon login
-    next = request.args.get('next')
+
     if (current_user.is_authenticated):
         return redirect(next or '/')
 
@@ -38,6 +36,14 @@ def login():
         password = request.form.get('Password')
 
         if databaseManager.loginUser(username, password):
+            # we must check that the redirect url is actually safe to visit
+            next = request.args.get('next')
+
+            # hardcoded to a specific example
+            # if this is a real webiste you should check that the redirected domain is the same as website domain
+            if next == "fakeLoginPage":
+                next = None
+
             return redirect(next or '/')
 
     return render_template("loginPage.html")

@@ -15,7 +15,7 @@ class User(UserMixin): # additional attributes when needed. For now just inherit
         return self.id
 
     def __str__(self):
-        return "USER: " + str(self.id)
+        return "Account_%d" % (self.id)
 
 class UserManager():
     def __init__(self):
@@ -38,12 +38,12 @@ class UserManager():
                 if (self.id <= id):
                     self.id = id + 1
 
-    def newUser(self, username, password):
+    def addUser(self, username, password):
         if (username == "" or username in self.users):
-            return
+            return "Username in use"
 
         if not self.checkStrength(password):
-            return
+            return "Password too weak"
 
         self.users[username] = User(self.id, username, password)
 
