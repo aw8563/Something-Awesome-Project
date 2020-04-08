@@ -1,14 +1,14 @@
 from flask import Flask
 from flask_login import LoginManager
-from LoginSystems.GoodLoginSystem.DatabaseManager import DatabaseManager
+from LoginSystems.GoodLoginSystem import DatabaseManager, RequestManager
 
 app = Flask(__name__, template_folder='../HTMLTemplates')
 app.config.from_object("LoginSystems.config")
 
 loginManager = LoginManager(app)
 loginManager.login_view = 'login'
-databaseManager = DatabaseManager()
-
+databaseManager = DatabaseManager.DatabaseManager()
+requestManager = RequestManager.RequestManager()
 
 @loginManager.user_loader
 def load_user(id):

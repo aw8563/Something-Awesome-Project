@@ -35,4 +35,4 @@ if __name__ == '__main__':
     dictionary.addWords(wordList)
 
     # perform the attack! You can specify which attacks to use if you want
-    attacker.runAttack(checkSuccess, ["DictionaryAttack"],findAll=True, testMode=False, verbose=False, log=True)
+    attacker.runAttack(checkSuccess, ["DictionaryAttack"],findAll=True, testMode=True, verbose=False, log=False)

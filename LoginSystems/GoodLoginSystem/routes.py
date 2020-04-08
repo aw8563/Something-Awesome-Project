@@ -1,12 +1,19 @@
 from flask import render_template, request, redirect
 from flask_login import login_required, login_user, logout_user, current_user
-from LoginSystems.GoodLoginSystem import app, databaseManager
+from LoginSystems.GoodLoginSystem import app, databaseManager, requestManager
+
+
+@app.before_request
+@requestManager.limitRequestsDecorator
+def block_method():
+    # no need to do anything, handled by the decorator
+    pass
 
 @app.route('/')
 def homePage():
     return render_template('home.html')
 
-@app.route('/createAccount', methods=["GET", "POST"])
+@app.route('/createAccount' , methods=["GET", "POST"])
 def createAccount():
     if (current_user.is_authenticated):
         return redirect('/')
@@ -49,18 +56,18 @@ def login():
     return render_template("loginPage.html")
 
 @app.route('/logout')
-def logoutUser():
+def logout():
     logout_user()
     return redirect('/')
 
 @app.route('/secret')
 @login_required
-def secretPage():
+def secret():
     return "success!"
 
 
 @app.route('/search', methods=['GET', 'POST'])
-def searchPage():
+def search():
     search = False
     results = []
     query = ""
@@ -72,17 +79,20 @@ def searchPage():
     return render_template('searchPage.html', search=search, results=results, query=query)
 
 @app.route('/answerPage')
-def answers():
+def answerPage():
     return render_template('answers.html')
-
 
 @app.route('/redirectAttack')
 def redirectAttack():
     return render_template('redirectAttack.html')
 
 @app.route('/fakeLoginPage', methods=['GET','POST'])
-def fakeLogin():
+def fakeLoginPage():
     if request.method == 'POST':
         return redirect('https://en.wikipedia.org/wiki/URL_redirection')
 
     return render_template('fakeLoginPage.html')
+
+@app.route('/error')
+def error():
+    return render_template("error.html")

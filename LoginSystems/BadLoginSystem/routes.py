@@ -46,13 +46,13 @@ def login():
     return render_template("loginPage.html")
 
 @app.route('/logout')
-def logoutUser():
+def logout():
     logout_user()
     return redirect('/')
 
 @app.route('/secret')
 @login_required
-def secretPage():
+def secret():
     return "success!"
 
 @app.route('/redirectAttack')
@@ -60,7 +60,7 @@ def redirectAttack():
     return render_template('redirectAttack.html')
 
 @app.route('/fakeLoginPage', methods=['GET','POST'])
-def fakeLogin():
+def fakeLoginPage():
     if request.method == 'POST':
         return redirect('https://en.wikipedia.org/wiki/URL_redirection')
 
