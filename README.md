@@ -24,6 +24,9 @@ pip3 install -r requirements.txt to install dependencies
 runWebsite.py hosts the website  
 attackWebsite.py attacks the website  
 
+keylogger.py runs the keylogger as a python script  
+startKeylogger builds and runs it as a .exe application. This way it is hidden from the victim.  
+
 
 <b>Criteria</b>
 
