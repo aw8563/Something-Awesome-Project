@@ -2,3 +2,5 @@ flask
 flask-login
 more-itertools
 requests
+pyinstaller
+keyboard
