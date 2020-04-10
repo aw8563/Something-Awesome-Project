@@ -10,7 +10,7 @@ except:
 
 if __name__ == "__main__":
     try:
-        # converts python script to a .exe application
+        # converts python script to a .exe application which runs as a background process hidden from the user
         with open(os.devnull, 'wb') as devnull:
             subprocess.check_call("pyinstaller --onefile -w "
                                   "--distpath ./ "
