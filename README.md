@@ -12,11 +12,6 @@ Apparently there is no such thing as a 100% secure login system. I want to furth
 - Explore alternate ways of password cracking that is independant of the login system. Im thinking of building my own keylogger.
  
 
-<u>Extensions </u>
-
-Research into stealing cookies and experimenting with it myself.
- 
-
 In order to keep this project legal and ethical, I will not host my login system online, and I will only test password cracking attacks on my local machine. Furthermore, all programs that I develop for the purpose of password cracking I wil keep to myself and not distribute to anyone. If you want to clone this repo go ahead but make sure you use it properly!  
 
 pip3 install -r requirements.txt to install dependencies  
